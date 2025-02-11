@@ -30,6 +30,14 @@ class NotesService {
     return result.rows[0].id;
   }
 
+  async getNotes() {
+    const query = {
+      text: 'SELECT * FROM notes'
+    };
+    const result = await this._pool.query(query);
+    return result.rows.map(mapDBToModel);
+  }
+
   async getNoteById(id) {
     const query = {
       text: 'SELECT * FROM notes WHERE id = $1',
