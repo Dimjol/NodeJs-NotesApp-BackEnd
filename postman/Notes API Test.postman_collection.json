@@ -1028,14 +1028,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:5000/notes/{{noteId}}",
+							"raw": "localhost:5000/notes",
 							"host": [
 								"localhost"
 							],
 							"port": "5000",
 							"path": [
-								"notes",
-								"{{noteId}}"
+								"notes"
 							]
 						}
 					},
@@ -1610,7 +1609,7 @@
 									"    pm.expect(responseJson.data).to.have.ownProperty('notes');\r",
 									"    pm.expect(responseJson.data.notes).to.be.an('array');\r",
 									"    pm.expect(responseJson.data.notes).to.have.lengthOf(1);\r",
-									"});-"
+									"});"
 								],
 								"type": "text/javascript",
 								"packages": {}
@@ -1801,14 +1800,14 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:5000/notes/{{noteId}UserB}}",
+							"raw": "localhost:5000/notes/{{noteIdUserB}}",
 							"host": [
 								"localhost"
 							],
 							"port": "5000",
 							"path": [
 								"notes",
-								"{{noteId}UserB}}"
+								"{{noteIdUserB}}"
 							]
 						}
 					},
@@ -2218,7 +2217,7 @@
 						"exec": [
 							"// membuat User A \r",
 							"const createUserARequest = {\r",
-							"    url: 'http://localhost:3000/users',\r",
+							"    url: 'http://localhost:5000/users',\r",
 							"    method: 'POST',\r",
 							"    header: {\r",
 							"        'Content-Type': 'application/json',\r",
@@ -2238,7 +2237,7 @@
 							" \r",
 							"    // Setelah terdaftar, login dengan User A\r",
 							"    const loginUserRequest = {\r",
-							"        url: 'http://localhost:3000/authentications',\r",
+							"        url: 'http://localhost:5000/authentications',\r",
 							"        method: 'POST',\r",
 							"        header: {\r",
 							"            'Content-Type': 'application/json',\r",
@@ -2263,7 +2262,7 @@
 							" \r",
 							"// membuat User B \r",
 							"const createUserBRequest = {\r",
-							"    url: 'http://localhost:3000/users',\r",
+							"    url: 'http://localhost:5000/users',\r",
 							"    method: 'POST',\r",
 							"    header: {\r",
 							"        'Content-Type': 'application/json',\r",
@@ -2283,7 +2282,7 @@
 							" \r",
 							"    // Setelah terdaftar, login dengan User B\r",
 							"    const loginUserRequest = {\r",
-							"        url: 'http://localhost:3000/authentications',\r",
+							"        url: 'http://localhost:5000/authentications',\r",
 							"        method: 'POST',\r",
 							"        header: {\r",
 							"            'Content-Type': 'application/json',\r",
