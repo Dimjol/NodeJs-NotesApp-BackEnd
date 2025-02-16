@@ -1,3 +1,4 @@
+
 /* eslint-disable no-unused-vars */
 class UsersHandler {
   constructor(service, validator) {
@@ -35,6 +36,7 @@ class UsersHandler {
       },
     };
   }
+
 }
 
 module.exports = UsersHandler;
