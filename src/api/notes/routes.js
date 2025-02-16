@@ -1,4 +1,3 @@
-/* eslint-disable linebreak-style */
 const routes = (handler) => [
   {
     method: 'POST',
@@ -39,6 +38,11 @@ const routes = (handler) => [
     options: {
       auth: 'notesapp_jwt',
     },
+  },
+  {
+    method: 'GET',
+    path: '/users',
+    handler: handler.getUsersByUsernameHandler,
   },
 ];
 

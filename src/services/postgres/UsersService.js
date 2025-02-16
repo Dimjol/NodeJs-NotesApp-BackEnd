@@ -1,6 +1,3 @@
-/* eslint-disable linebreak-style */
-
-/* eslint-disable linebreak-style */
 const { Pool } = require('pg');
 const { nanoid } = require('nanoid');
 const bcrypt = require('bcrypt');
@@ -77,9 +74,9 @@ class UsersService {
     if (!match) {
       throw new AuthenticationError('Kredensial yang Anda berikan salah');
     }
+
     return id;
   }
-
 }
 
 module.exports = UsersService;

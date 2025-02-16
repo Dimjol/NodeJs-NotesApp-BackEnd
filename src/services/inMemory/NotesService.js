@@ -1,8 +1,6 @@
-/* eslint-disable linebreak-style */
 const { nanoid } = require('nanoid');
 const InvariantError = require('../../exceptions/InvariantError');
 const NotFoundError = require('../../exceptions/NotFoundError');
-
 
 class NotesService {
   constructor() {
@@ -66,7 +64,6 @@ class NotesService {
     }
     this._notes.splice(index, 1);
   }
-
 }
 
 module.exports = NotesService;

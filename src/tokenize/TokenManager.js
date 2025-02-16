@@ -1,11 +1,6 @@
-/* eslint-disable linebreak-style */
-/* eslint-disable no-unused-vars */
-/* eslint-disable linebreak-style */
-/* eslint-disable no-trailing-spaces */
-/* eslint-disable linebreak-style */
-/* eslint-disable no-undef */
 const Jwt = require('@hapi/jwt');
- 
+const InvariantError = require('../exceptions/InvariantError');
+
 const TokenManager = {
   generateAccessToken: (payload) => Jwt.token.generate(payload, process.env.ACCESS_TOKEN_KEY),
   generateRefreshToken: (payload) => Jwt.token.generate(payload, process.env.REFRESH_TOKEN_KEY),
@@ -19,6 +14,7 @@ const TokenManager = {
       throw new InvariantError('Refresh token tidak valid');
     }
   },
+
 };
- 
+
 module.exports = TokenManager;
