@@ -68,11 +68,11 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:5000/users",
+							"raw": "{{url}}:{{port}}/users",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"users"
 							]
@@ -104,7 +104,8 @@
 									"pm.environment.set('currentBadUserPayload', JSON.stringify(currentBadUserPayload));",
 									"pm.environment.set('badUserPayloads', badUserPayloads);"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						},
 						{
@@ -143,7 +144,8 @@
 									" ",
 									"repeatRequestUntilDatasetEmpty();"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -160,11 +162,11 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:5000/users",
+							"raw": "{{url}}:{{port}}/users",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"users"
 							]
@@ -201,7 +203,8 @@
 									"    pm.expect(responseJson.message).to.equals('Gagal menambahkan user. Username sudah digunakan.');",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						},
 						{
@@ -230,7 +233,8 @@
 									"    console.log(error ? error : response.json());",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -247,11 +251,11 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:5000/users",
+							"raw": "{{url}}:{{port}}/users",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"users"
 							]
@@ -288,7 +292,8 @@
 									"    pm.expect(responseJson.message).to.equals('User tidak ditemukan');",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -296,11 +301,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:5000/users/xxxx",
+							"raw": "{{url}}:{{port}}/users/xxxx",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"users",
 								"xxxx"
@@ -365,14 +370,142 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:5000/users/{{currentUserId}}",
+							"raw": "{{url}}:{{port}}/users/{{currentUserId}}",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"users",
 								"{{currentUserId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Users by Username Related to Dicoding",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"// Menambahkan user dengan username dicoding\r",
+									"const addDicodingUserRequest = {\r",
+									"    method: 'POST',\r",
+									"    url: 'http://localhost:5000/users',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json',\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            username: 'dicoding',\r",
+									"            password: pm.environment.get('newPassword'),\r",
+									"            fullname: 'Dicoding',\r",
+									"        }),\r",
+									"    },\r",
+									"};\r",
+									" \r",
+									"pm.sendRequest(addDicodingUserRequest, (error, response) => {\r",
+									"    console.log(error ? error : response);\r",
+									"});\r",
+									" \r",
+									"// menambahkan user dengan username \"dicoding_indonesia\"\r",
+									"const addDicodingIndonesiaUserRequest = {\r",
+									"    method: 'POST',\r",
+									"    url: 'http://localhost:5000/users',\r",
+									"    header: {\r",
+									"        'Content-Type': 'application/json',\r",
+									"    },\r",
+									"    body: {\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify({\r",
+									"            username: 'dicoding_indonesia',\r",
+									"            password: pm.environment.get('newPassword'),\r",
+									"            fullname: 'Dicoding Indonesia',\r",
+									"        }),\r",
+									"    },\r",
+									"};\r",
+									" \r",
+									"pm.sendRequest(addDicodingIndonesiaUserRequest, (error, response) => {\r",
+									"    console.log(error ? error : response);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status should be 200', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									" \r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+									"});\r",
+									" \r",
+									"pm.test('response body should an object', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"});\r",
+									" \r",
+									"pm.test('response body should have correct property and value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									" \r",
+									"    pm.expect(responseJson).to.have.ownProperty('status');\r",
+									"    pm.expect(responseJson.status).to.equals('success');\r",
+									"    pm.expect(responseJson).to.have.ownProperty('data');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"});\r",
+									" \r",
+									"pm.test('response body data should contain users array', () => {\r",
+									"    const { data } = pm.response.json();\r",
+									" \r",
+									"    pm.expect(data).to.have.ownProperty('users');\r",
+									"    pm.expect(data.users).to.be.an('array');\r",
+									"});\r",
+									" \r",
+									"pm.test('the array users should have contain 2 user object related to dicoding username', () => {\r",
+									"    const { data: { users } } = pm.response.json();\r",
+									" \r",
+									"    pm.expect(users).to.have.lengthOf(2);\r",
+									" \r",
+									"    users.forEach((user) => {\r",
+									"        pm.expect(user).to.be.an('object');\r",
+									"        pm.expect(user).to.have.ownProperty('id');\r",
+									"        pm.expect(user).to.have.ownProperty('username');\r",
+									"        pm.expect(user).to.have.ownProperty('fullname');\r",
+									"        pm.expect(user.username).to.include('dicoding');\r",
+									"    });\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}:{{port}}/users?username=dicoding",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "dicoding"
+								}
 							]
 						}
 					},
@@ -410,7 +543,8 @@
 									"    console.log(error ? error : response.json());",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						},
 						{
@@ -458,7 +592,8 @@
 									"    pm.environment.set('refreshToken', data.refreshToken);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -475,11 +610,11 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:5000/authentications",
+							"raw": "{{url}}:{{port}}/authentications",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"authentications"
 							]
@@ -516,7 +651,8 @@
 									"    pm.expect(responseJson.message).to.equals('Kredensial yang Anda berikan salah');",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -533,11 +669,11 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:5000/authentications",
+							"raw": "{{url}}:{{port}}/authentications",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"authentications"
 							]
@@ -585,7 +721,8 @@
 									"    pm.expect(data.accessToken).to.not.equals(null);",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -602,11 +739,11 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:5000/authentications",
+							"raw": "{{url}}:{{port}}/authentications",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"authentications"
 							]
@@ -643,7 +780,8 @@
 									"    pm.expect(responseJson.message).to.equals('Refresh token tidak valid');",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -660,11 +798,11 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:5000/authentications",
+							"raw": "{{url}}:{{port}}/authentications",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"authentications"
 							]
@@ -701,7 +839,8 @@
 									"    pm.expect(responseJson.message).to.equals('Refresh token berhasil dihapus');",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -718,11 +857,11 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:5000/authentications",
+							"raw": "{{url}}:{{port}}/authentications",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"authentications"
 							]
@@ -759,7 +898,8 @@
 									"    pm.expect(responseJson.message).to.equals('Refresh token tidak valid');",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -776,11 +916,11 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:5000/authentications",
+							"raw": "{{url}}:{{port}}/authentications",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"authentications"
 							]
@@ -833,7 +973,8 @@
 									"    pm.environment.set('noteId', data.noteId);\r",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -860,11 +1001,11 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:5000/notes",
+							"raw": "{{url}}:{{port}}/notes",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes"
 							]
@@ -897,7 +1038,8 @@
 									"pm.environment.set('currentBadNotePayload', JSON.stringify(currentBadNotePayload));\r",
 									"pm.environment.set('badNotePayloads', badNotePayloads);"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						},
 						{
@@ -933,7 +1075,8 @@
 									"}\r",
 									"repeatRequestUntilDatasetEmpty();"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -960,11 +1103,11 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:5000/notes",
+							"raw": "{{url}}:{{port}}/notes",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes"
 							]
@@ -1028,11 +1171,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:5000/notes",
+							"raw": "{{url}}:{{port}}/notes",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes"
 							]
@@ -1094,9 +1237,12 @@
 									"   pm.expect(note.tags).to.eql(expectedTags);\r",
 									"   pm.expect(note).to.have.ownProperty('body');\r",
 									"   pm.expect(note.body).to.equals(expectedBody);\r",
+									"   pm.expect(note).to.have.ownProperty('username');\r",
+									"   pm.expect(note.username).to.be.a('string');\r",
 									"});"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -1114,11 +1260,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:5000/notes/{{noteId}}",
+							"raw": "{{url}}:{{port}}/notes/{{noteId}}",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes",
 								"{{noteId}}"
@@ -1211,11 +1357,11 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:5000/notes/{{noteId}}",
+							"raw": "{{url}}:{{port}}/notes/{{noteId}}",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes",
 								"{{noteId}}"
@@ -1249,7 +1395,8 @@
 									"pm.environment.set('currentBadNotePayload', JSON.stringify(currentBadNotePayload));\r",
 									"pm.environment.set('badNotePayloads', badNotePayloads);"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						},
 						{
@@ -1287,7 +1434,8 @@
 									" \r",
 									"repeatRequestUntilDatasetEmpty();"
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -1314,11 +1462,11 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:5000/notes/{{noteId}}",
+							"raw": "{{url}}:{{port}}/notes/{{noteId}}",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes",
 								"{{noteId}}"
@@ -1396,11 +1544,11 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "localhost:5000/notes/{{noteId}}",
+							"raw": "{{url}}:{{port}}/notes/{{noteId}}",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes",
 								"{{noteId}}"
@@ -1424,7 +1572,8 @@
 									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');",
 									"}); "
 								],
-								"type": "text/javascript"
+								"type": "text/javascript",
+								"packages": {}
 							}
 						}
 					],
@@ -1432,11 +1581,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:5000/notes",
+							"raw": "{{url}}:{{port}}/notes",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes"
 							]
@@ -1480,6 +1629,16 @@
 								"type": "text/javascript",
 								"packages": {}
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
 					],
 					"request": {
@@ -1505,11 +1664,11 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:5000/notes",
+							"raw": "{{url}}:{{port}}/notes",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes"
 							]
@@ -1548,6 +1707,16 @@
 								"type": "text/javascript",
 								"packages": {}
 							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
 						}
 					],
 					"request": {
@@ -1573,11 +1742,11 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:5000/notes",
+							"raw": "{{url}}:{{port}}/notes",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes"
 							]
@@ -1630,11 +1799,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:5000/notes",
+							"raw": "{{url}}:{{port}}/notes",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes"
 							]
@@ -1687,11 +1856,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:5000/notes",
+							"raw": "{{url}}:{{port}}/notes",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes"
 							]
@@ -1743,11 +1912,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:5000/notes/{{noteIdUserA}}",
+							"raw": "{{url}}:{{port}}/notes/{{noteIdUserA}}",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes",
 								"{{noteIdUserA}}"
@@ -1800,11 +1969,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:5000/notes/{{noteIdUserB}}",
+							"raw": "{{url}}:{{port}}/notes/{{noteIdUserB}}",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes",
 								"{{noteIdUserB}}"
@@ -1857,11 +2026,11 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "localhost:5000/notes/{{noteIdUserA}}",
+							"raw": "{{url}}:{{port}}/notes/{{noteIdUserA}}",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes",
 								"{{noteIdUserA}}"
@@ -1915,11 +2084,11 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:5000/notes/{{noteIdUserA}}",
+							"raw": "{{url}}:{{port}}/notes/{{noteIdUserA}}",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes",
 								"{{noteIdUserA}}"
@@ -1973,11 +2142,11 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:5000/notes/{{noteIdUserB}}",
+							"raw": "{{url}}:{{port}}/notes/{{noteIdUserB}}",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes",
 								"{{noteIdUserB}}"
@@ -2039,11 +2208,11 @@
 							}
 						},
 						"url": {
-							"raw": "localhost:5000/notes/{{noteIdUserA}}",
+							"raw": "{{url}}:{{port}}/notes/{{noteIdUserA}}",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes",
 								"{{noteIdUserA}}"
@@ -2096,11 +2265,11 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "localhost:5000/notes/{{noteIdUserA}}",
+							"raw": "{{url}}:{{port}}/notes/{{noteIdUserA}}",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes",
 								"{{noteIdUserA}}"
@@ -2145,11 +2314,11 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "localhost:5000/notes/{{noteIdUserA}}",
+							"raw": "{{url}}:{{port}}/notes/{{noteIdUserA}}",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes",
 								"{{noteIdUserA}}"
@@ -2194,11 +2363,11 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "localhost:5000/notes/{{noteIdUserB}}",
+							"raw": "{{url}}:{{port}}/notes/{{noteIdUserB}}",
 							"host": [
-								"localhost"
+								"{{url}}"
 							],
-							"port": "5000",
+							"port": "{{port}}",
 							"path": [
 								"notes",
 								"{{noteIdUserB}}"
@@ -2318,6 +2487,843 @@
 					}
 				}
 			]
+		},
+		{
+			"name": "Collaborations",
+			"item": [
+				{
+					"name": "Adding Note using Owner User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 201 value', () => {\r",
+									"   pm.response.to.have.status(201);\r",
+									"}); \r",
+									" \r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+									"});\r",
+									" \r",
+									"pm.test('response body data should contains note id', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									" \r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.have.ownProperty('data');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data).to.have.ownProperty('noteId');\r",
+									"    pm.expect(responseJson.data.noteId).to.be.a('string');\r",
+									" \r",
+									"    // memasukkan noteId ke dalam environment variable\r",
+									"    pm.environment.set('ownerNoteId', responseJson.data.noteId);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ownerAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n   \"title\": \"Catatan A\",\r\n   \"tags\": [\"Android\", \"Web\"],\r\n   \"body\": \"Isi dari catatan A\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}:{{port}}/notes",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"notes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Adding Collaborator User as Collaborator to Added Note",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 201 value', () => {\r",
+									"   pm.response.to.have.status(201);\r",
+									"}); \r",
+									" \r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+									"});\r",
+									" \r",
+									"pm.test('response body data should have collaborationId', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									" \r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.have.ownProperty('data');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data).to.have.ownProperty('collaborationId');\r",
+									"    pm.expect(responseJson.data.collaborationId).to.be.a('string');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ownerAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"noteId\": \"{{ownerNoteId}}\",\r\n    \"userId\": \"{{collaboratorUserId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}:{{port}}/collaborations",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"collaborations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Getting All Notes using Collaborator",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 200 value', () => {\r",
+									"   pm.response.to.have.status(200);\r",
+									"}); \r",
+									" \r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+									"});\r",
+									" \r",
+									"pm.test('response body data should contains notes array with 1 item', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									" \r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.have.ownProperty('data');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data).to.have.ownProperty('notes');\r",
+									"    pm.expect(responseJson.data.notes).to.be.an('array');\r",
+									"    pm.expect(responseJson.data.notes).to.have.lengthOf(1);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{collaboratorAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}:{{port}}/notes",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"notes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Getting Added Note using Collaborator User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 200 value', () => {\r",
+									"   pm.response.to.have.status(200);\r",
+									"}); \r",
+									" \r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+									"});\r",
+									" \r",
+									"// tidak perlu melakukan uji pada nilai body response, karena sudah pernah diuji pada folder /notes"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{collaboratorAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}:{{port}}/notes/{{ownerNoteId}}",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"notes",
+								"{{ownerNoteId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Editing Added Note using Collaborator User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 200 value', () => {\r",
+									"   pm.response.to.have.status(200);\r",
+									"}); \r",
+									" \r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+									"});\r",
+									" \r",
+									"// tidak perlu melakukan uji pada nilai body response, karena sudah pernah diuji pada folder /notes"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{collaboratorAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Catatan A Revised\",\r\n    \"tags\": [\"Android\", \"Web\"],\r\n    \"body\": \"Isi dari Catatan A Revised by collaborator\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}:{{port}}/notes/{{ownerNoteId}}",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"notes",
+								"{{ownerNoteId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deleting Added Note using Collaborator User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 403 value', () => {\r",
+									"   pm.response.to.have.status(403);\r",
+									"}); \r",
+									" \r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+									"});\r",
+									" \r",
+									"pm.test('response body should contain correct value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									" \r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.have.ownProperty('status');\r",
+									"    pm.expect(responseJson.status).to.equals('fail');\r",
+									"    pm.expect(responseJson).to.have.ownProperty('message');\r",
+									"    pm.expect(responseJson.message).to.equals('Anda tidak berhak mengakses resource ini');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{collaboratorAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}:{{port}}/notes/{{ownerNoteId}}",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"notes",
+								"{{ownerNoteId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Collaborator User from Collaborator to Added Note",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 200 value', () => {\r",
+									"   pm.response.to.have.status(200);\r",
+									"}); \r",
+									" \r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+									"});\r",
+									" \r",
+									"pm.test('response body data should contains correct value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									" \r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.have.ownProperty('status');\r",
+									"    pm.expect(responseJson.status).to.equals('success');\r",
+									"    pm.expect(responseJson).to.have.ownProperty('message');\r",
+									"    pm.expect(responseJson.message).to.equals('Kolaborasi berhasil dihapus');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ownerAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"noteId\": \"{{ownerNoteId}}\",\r\n    \"userId\": \"{{collaboratorUserId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}:{{port}}/collaborations",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"collaborations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Adding Collaborator User as Collaborator to Added Note using Collaborator User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 403 value', () => {\r",
+									"   pm.response.to.have.status(403);\r",
+									"}); \r",
+									" \r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+									"});\r",
+									" \r",
+									"pm.test('response body should contain correct value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									" \r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.have.ownProperty('status');\r",
+									"    pm.expect(responseJson.status).to.equals('fail');\r",
+									"    pm.expect(responseJson).to.have.ownProperty('message');\r",
+									"    pm.expect(responseJson.message).to.equals('Anda tidak berhak mengakses resource ini');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{collaboratorAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"noteId\": \"{{ownerNoteId}}\",\r\n    \"userId\": \"{{collaboratorUserId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}:{{port}}/collaborations",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"collaborations"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Getting All Notes using Collaborator User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 200 value', () => {\r",
+									"   pm.response.to.have.status(200);\r",
+									"}); \r",
+									" \r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+									"});\r",
+									" \r",
+									"pm.test('response body data should contains notes array with 0 item', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									" \r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.have.ownProperty('data');\r",
+									"    pm.expect(responseJson.data).to.be.an('object');\r",
+									"    pm.expect(responseJson.data).to.have.ownProperty('notes');\r",
+									"    pm.expect(responseJson.data.notes).to.be.an('array');\r",
+									"    pm.expect(responseJson.data.notes).to.have.lengthOf(0);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{collaboratorAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}:{{port}}/notes",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"notes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Getting Added Note using Collaborator User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 403 value', () => {\r",
+									"   pm.response.to.have.status(403);\r",
+									"}); \r",
+									" \r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+									"});\r",
+									" \r",
+									"pm.test('response body should contain correct value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									" \r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.have.ownProperty('status');\r",
+									"    pm.expect(responseJson.status).to.equals('fail');\r",
+									"    pm.expect(responseJson).to.have.ownProperty('message');\r",
+									"    pm.expect(responseJson.message).to.equals('Anda tidak berhak mengakses resource ini');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{collaboratorAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{url}}:{{port}}/notes/{{ownerNoteId}}",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"notes",
+								"{{ownerNoteId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Editing Added Note using Collaborator User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 403 value', () => {\r",
+									"   pm.response.to.have.status(403);\r",
+									"}); \r",
+									" \r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8');\r",
+									"});\r",
+									" \r",
+									"pm.test('response body should contain correct value', () => {\r",
+									"    const responseJson = pm.response.json();\r",
+									" \r",
+									"    pm.expect(responseJson).to.be.an('object');\r",
+									"    pm.expect(responseJson).to.have.ownProperty('status');\r",
+									"    pm.expect(responseJson.status).to.equals('fail');\r",
+									"    pm.expect(responseJson).to.have.ownProperty('message');\r",
+									"    pm.expect(responseJson.message).to.equals('Anda tidak berhak mengakses resource ini');\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{collaboratorAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"title\": \"Catatan A Revised\",\r\n    \"tags\": [\"Android\", \"Web\"],\r\n    \"body\": \"Isi dari Catatan A Revised by collaborator\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{url}}:{{port}}/notes/{{ownerNoteId}}",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"notes",
+								"{{ownerNoteId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deleting Added Note using Owner User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('response status code should have 200 value', () => {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									" \r",
+									"pm.test('response Content-Type header should have application/json value', () => {\r",
+									"    pm.expect(pm.response.headers.get('Content-Type')).to.equals('application/json; charset=utf-8')\r",
+									"});\r",
+									" \r",
+									"// tidak perlu melakukan uji pada nilai body response, karena sudah pernah diuji pada folder /notes"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{ownerAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{url}}:{{port}}/notes/{{ownerNoteId}}",
+							"host": [
+								"{{url}}"
+							],
+							"port": "{{port}}",
+							"path": [
+								"notes",
+								"{{ownerNoteId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							"// Membuat Owner User\r",
+							"const createOwnerUserRequest = {\r",
+							"    url: 'http://localhost:5000/users',\r",
+							"    method: 'POST',\r",
+							"    header: {\r",
+							"        'Content-Type': 'application/json',\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({\r",
+							"            username: 'owner_user',\r",
+							"            password: 'secret',\r",
+							"            fullname: 'Owner',\r",
+							"        }),\r",
+							"    },\r",
+							"};\r",
+							" \r",
+							"pm.sendRequest(createOwnerUserRequest, (error, response) => {\r",
+							"    console.log(error ? error : response);\r",
+							" \r",
+							"    // Setelah terdaftar, login dengan Owner User\r",
+							"     const loginOwnerUserRequest = {\r",
+							"        url: 'http://localhost:5000/authentications',\r",
+							"        method: 'POST',\r",
+							"        header: {\r",
+							"            'Content-Type': 'application/json',\r",
+							"        },\r",
+							"        body: {\r",
+							"            mode: 'raw',\r",
+							"            raw: JSON.stringify({\r",
+							"                username: 'owner_user',\r",
+							"                password: 'secret',\r",
+							"            }),\r",
+							"        },\r",
+							"    };\r",
+							" \r",
+							"    pm.sendRequest(loginOwnerUserRequest, (error, response) => {\r",
+							"        if (!error) {\r",
+							"            // memasukkan access token Owner User ke environment variabel\r",
+							"            const { data: { accessToken } } = response.json();\r",
+							"            pm.environment.set('ownerAccessToken', accessToken);\r",
+							"        }\r",
+							"    });\r",
+							"});\r",
+							" \r",
+							" \r",
+							"// Membuat Collaborator User\r",
+							"const createCollaboratorUserRequest = {\r",
+							"    url: 'http://localhost:5000/users',\r",
+							"    method: 'POST',\r",
+							"    header: {\r",
+							"        'Content-Type': 'application/json',\r",
+							"    },\r",
+							"    body: {\r",
+							"        mode: 'raw',\r",
+							"        raw: JSON.stringify({\r",
+							"            username: 'collaborator_user',\r",
+							"            password: 'secret',\r",
+							"            fullname: 'Collaborator',\r",
+							"        }),\r",
+							"    },\r",
+							"};\r",
+							" \r",
+							"pm.sendRequest(createCollaboratorUserRequest, (error, response) => {\r",
+							"    console.log(error ? error : response);\r",
+							" \r",
+							"    if (!error) {\r",
+							"        if (response.code === 201) {\r",
+							"            // memasukkan id collaborator user ke environment variabel\r",
+							"            const { data : { userId } } = response.json();\r",
+							"            pm.environment.set('collaboratorUserId', userId);\r",
+							"        }\r",
+							"    }\r",
+							" \r",
+							"    // Setelah terdaftar, login dengan Collaborator User\r",
+							"     const loginCollaboratorUserRequest = {\r",
+							"        url: 'http://localhost:5000/authentications',\r",
+							"        method: 'POST',\r",
+							"        header: {\r",
+							"            'Content-Type': 'application/json',\r",
+							"        },\r",
+							"        body: {\r",
+							"            mode: 'raw',\r",
+							"            raw: JSON.stringify({\r",
+							"                username: 'collaborator_user',\r",
+							"                password: 'secret',\r",
+							"            }),\r",
+							"        },\r",
+							"    };\r",
+							" \r",
+							"     pm.sendRequest(loginCollaboratorUserRequest, (error, response) => {\r",
+							"        if (!error) {\r",
+							"            // memasukkan access token Owner User ke environment variabel\r",
+							"            const { data: { accessToken } } = response.json();\r",
+							"            pm.environment.set('collaboratorAccessToken', accessToken);\r",
+							"        }\r",
+							"    });\r",
+							"});"
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"packages": {},
+						"exec": [
+							""
+						]
+					}
+				}
+			]
 		}
 	],
 	"event": [
@@ -2415,6 +3421,36 @@
 		},
 		{
 			"key": "noteIdUserB",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "url",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "port",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "collaboratorUserId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "collaboratorAccessToken",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "ownerNoteId",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "ownerAccessToken",
 			"value": "",
 			"type": "string"
 		}
