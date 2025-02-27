@@ -106,6 +106,13 @@ const init = async () => {
         validator: CollaborationsValidator,
       },
     },
+    {
+      plugin: _exports,
+      options: {
+        service: ProducerService,
+        validator: ExportsValidator,
+      },
+    },
   ]);
 
   server.ext('onPreResponse', (request, h) => {
