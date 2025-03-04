@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 // mengimpor dotenv dan menjalankan konfigurasinya
 require('dotenv').config();
